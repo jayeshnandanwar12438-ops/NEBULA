@@ -10,6 +10,9 @@ import ScientificReportCard from "@/components/ScientificReportCard";
 import DecisionLabView from "@/components/DecisionLabView";
 import BenchmarkView from "@/components/BenchmarkView";
 import SettingsView from "@/components/SettingsView";
+import CosmicNebulaCanvas from "@/components/CosmicNebulaCanvas";
+import ScientificHudOverlay from "@/components/ScientificHudOverlay";
+import HologramTargetViewer from "@/components/HologramTargetViewer";
 import {
   AstronomicalTarget,
   HealthStatus,
@@ -28,6 +31,7 @@ import {
   Cpu,
   Layers,
   ArrowRight,
+  Orbit,
 } from "lucide-react";
 
 export default function Home() {
@@ -111,19 +115,31 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen bg-space-950 text-slate-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-space-950 text-slate-100 overflow-hidden font-sans relative">
+      {/* 3D Cosmic Nebula & Starfield Interactive Background Canvas */}
+      <CosmicNebulaCanvas />
+
       {/* Navigation Sidebar */}
-      <Sidebar
-        currentTab={currentTab}
-        onSelectTab={setCurrentTab}
-        runtimeMode={health?.runtime_mode}
-      />
+      <div className="relative z-10">
+        <Sidebar
+          currentTab={currentTab}
+          onSelectTab={setCurrentTab}
+          runtimeMode={health?.runtime_mode}
+        />
+      </div>
 
       {/* Main Observatory Canvas */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
+        {/* Top Header */}
         <Header health={health} activeViewTitle={getTitle()} />
 
-        <main className="flex-1 overflow-y-auto p-6 space-y-6 bg-grid-pattern">
+        {/* Real-time Motion Graphics Scientific HUD Overlay */}
+        <ScientificHudOverlay
+          activeTargetName={activeTarget?.name || activeTarget?.target_id}
+          isInvestigating={isInvestigating}
+        />
+
+        <main className="flex-1 overflow-y-auto p-6 space-y-6 bg-grid-pattern relative">
           {/* Error Banner */}
           {errorMessage && (
             <div className="bg-rose-950/40 border border-rose-800/80 p-4 rounded-xl text-xs text-rose-300 flex items-center gap-2.5 shadow-lg">
@@ -136,10 +152,11 @@ export default function Home() {
           {currentTab === "overview" && (
             <div className="space-y-6">
               {/* Mission Hero Banner */}
-              <div className="bg-gradient-to-r from-space-900 via-space-850 to-space-900 border border-space-700/80 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+              <div className="bg-gradient-to-r from-space-900/90 via-space-850/80 to-space-900/90 border border-cyan-800/40 rounded-2xl p-6 shadow-2xl relative overflow-hidden backdrop-blur-md">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="max-w-2xl space-y-3 relative z-10">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
-                    <Sparkles className="w-3.5 h-3.5" />
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-semibold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.25)]">
+                    <Sparkles className="w-3.5 h-3.5 animate-spin-slow" />
                     AWS Strands Decider 2B Agent Experience Hackathon 2026
                   </div>
                   <h2 className="text-2xl font-bold text-slate-100 tracking-tight">
@@ -155,14 +172,14 @@ export default function Home() {
                   <div className="pt-2 flex items-center gap-3">
                     <button
                       onClick={() => setCurrentTab("investigate")}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-space-950 font-mono text-xs font-bold rounded-lg shadow-lg shadow-cyan-950 transition-all"
+                      className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-space-950 font-mono text-xs font-bold rounded-lg shadow-lg shadow-cyan-950/60 transition-all hover:scale-[1.02] active:scale-[0.98]"
                     >
                       <span>Start New Investigation</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => setCurrentTab("decision-lab")}
-                      className="px-4 py-2 bg-space-800 hover:bg-space-750 text-slate-200 border border-space-700 font-mono text-xs rounded-lg transition-all"
+                      className="px-4 py-2 bg-space-800/90 hover:bg-space-750 text-slate-200 border border-cyan-800/40 font-mono text-xs rounded-lg transition-all backdrop-blur-sm"
                     >
                       Open Decision Lab
                     </button>
@@ -172,31 +189,32 @@ export default function Home() {
 
               {/* Stat Telemetry Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-xs">
-                <div className="bg-space-900 p-4 rounded-xl border border-space-700/80 shadow space-y-1">
-                  <div className="text-slate-500 uppercase text-[10px]">Decision Engine</div>
+                <div className="bg-space-900/80 backdrop-blur-md p-4 rounded-xl border border-cyan-900/40 shadow-lg space-y-1 relative overflow-hidden">
+                  <div className="text-slate-400 uppercase text-[10px] tracking-wider">Decision Engine</div>
                   <div className="text-base font-bold text-cyan-400">Strands Decider 2B</div>
                   <div className="text-[11px] text-slate-400">Pointer-head classification</div>
                 </div>
-                <div className="bg-space-900 p-4 rounded-xl border border-space-700/80 shadow space-y-1">
-                  <div className="text-slate-500 uppercase text-[10px]">Reasoning Cloud</div>
+                <div className="bg-space-900/80 backdrop-blur-md p-4 rounded-xl border border-violet-900/40 shadow-lg space-y-1 relative overflow-hidden">
+                  <div className="text-slate-400 uppercase text-[10px] tracking-wider">Reasoning Cloud</div>
                   <div className="text-base font-bold text-violet-400">Amazon Bedrock</div>
                   <div className="text-[11px] text-slate-400">Claude 3.5 Sonnet / Converse API</div>
                 </div>
-                <div className="bg-space-900 p-4 rounded-xl border border-space-700/80 shadow space-y-1">
-                  <div className="text-slate-500 uppercase text-[10px]">Active Synthetic Targets</div>
+                <div className="bg-space-900/80 backdrop-blur-md p-4 rounded-xl border border-emerald-900/40 shadow-lg space-y-1 relative overflow-hidden">
+                  <div className="text-slate-400 uppercase text-[10px] tracking-wider">Active Synthetic Targets</div>
                   <div className="text-base font-bold text-emerald-400">{targets.length} Cataloged</div>
                   <div className="text-[11px] text-slate-400">Transients, NEOs, Artifacts</div>
                 </div>
-                <div className="bg-space-900 p-4 rounded-xl border border-space-700/80 shadow space-y-1">
-                  <div className="text-slate-500 uppercase text-[10px]">Historical Investigations</div>
+                <div className="bg-space-900/80 backdrop-blur-md p-4 rounded-xl border border-amber-900/40 shadow-lg space-y-1 relative overflow-hidden">
+                  <div className="text-slate-400 uppercase text-[10px] tracking-wider">Historical Investigations</div>
                   <div className="text-base font-bold text-amber-400">{historyList.length} Archived</div>
                   <div className="text-[11px] text-slate-400">Full audit trail preserved</div>
                 </div>
               </div>
 
               {/* Quick Anomaly Catalog */}
-              <div className="bg-space-900 border border-space-700/80 rounded-xl p-5 shadow space-y-3">
-                <h3 className="text-xs uppercase font-mono font-bold text-slate-200 tracking-wider">
+              <div className="bg-space-900/80 backdrop-blur-md border border-space-700/80 rounded-xl p-5 shadow-lg space-y-3">
+                <h3 className="text-xs uppercase font-mono font-bold text-slate-200 tracking-wider flex items-center gap-2">
+                  <Orbit className="w-3.5 h-3.5 text-cyan-400" />
                   Available Synthetic Anomaly Catalog
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
@@ -207,15 +225,17 @@ export default function Home() {
                         setSelectedTargetId(tgt.target_id);
                         setCurrentTab("investigate");
                       }}
-                      className="bg-space-950 p-3.5 rounded-lg border border-space-800 hover:border-cyan-500/50 cursor-pointer transition-all space-y-2"
+                      className="bg-space-950/70 p-3.5 rounded-lg border border-space-800 hover:border-cyan-500/50 cursor-pointer transition-all space-y-2 hover:shadow-[0_0_15px_rgba(6,182,212,0.15)] group"
                     >
                       <div className="flex justify-between items-center">
-                        <span className="font-mono font-bold text-cyan-400">{tgt.target_id}</span>
+                        <span className="font-mono font-bold text-cyan-400 group-hover:text-cyan-300">
+                          {tgt.target_id}
+                        </span>
                         <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-space-850 text-slate-400 border border-space-750 uppercase">
                           {tgt.expected_classification.replace("_", " ")}
                         </span>
                       </div>
-                      <div className="text-slate-300 text-xs font-semibold">{tgt.name}</div>
+                      <div className="text-slate-200 text-xs font-semibold">{tgt.name}</div>
                       <div className="text-slate-400 text-[11px] line-clamp-2">{tgt.description}</div>
                     </div>
                   ))}
@@ -242,9 +262,16 @@ export default function Home() {
                 onLaunchInvestigation={handleLaunchInvestigation}
               />
 
-              {/* Active Target Light Curve / Astrometry */}
+              {/* Active Target 3D Hologram Projection & Multi-Epoch Charts */}
               {activeTarget && (
-                <LightCurveChart epochs={activeTarget.epochs} targetName={activeTarget.name} />
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                  <div className="xl:col-span-1">
+                    <HologramTargetViewer target={activeTarget} />
+                  </div>
+                  <div className="xl:col-span-2">
+                    <LightCurveChart epochs={activeTarget.epochs} targetName={activeTarget.name} />
+                  </div>
+                </div>
               )}
 
               {/* Real-time Decider Decision Timeline */}
@@ -267,7 +294,7 @@ export default function Home() {
           {/* TAB 3: INVESTIGATION HISTORY */}
           {currentTab === "history" && (
             <div className="space-y-4">
-              <div className="bg-space-900 border border-space-700/80 rounded-xl p-5 shadow flex justify-between items-center">
+              <div className="bg-space-900/80 backdrop-blur-md border border-space-700/80 rounded-xl p-5 shadow flex justify-between items-center">
                 <div>
                   <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
                     <History className="w-4 h-4 text-cyan-400" />
@@ -292,7 +319,7 @@ export default function Home() {
                         setSelectedTargetId(item.target.target_id);
                         setCurrentTab("investigate");
                       }}
-                      className="bg-space-900 border border-space-700/70 hover:border-cyan-500/50 p-4 rounded-xl cursor-pointer transition-all shadow-sm space-y-2"
+                      className="bg-space-900/80 backdrop-blur-md border border-space-700/70 hover:border-cyan-500/50 p-4 rounded-xl cursor-pointer transition-all shadow-sm space-y-2 hover:shadow-[0_0_15px_rgba(6,182,212,0.12)]"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
                         <div className="flex items-center gap-2">
@@ -328,7 +355,7 @@ export default function Home() {
                   ))}
                 </div>
               ) : (
-                <div className="bg-space-900 border border-space-700/60 rounded-xl p-12 text-center text-slate-500 text-xs">
+                <div className="bg-space-900/80 backdrop-blur-md border border-space-700/60 rounded-xl p-12 text-center text-slate-400 text-xs">
                   No completed investigations yet. Launch one from &apos;New Investigation&apos;!
                 </div>
               )}
