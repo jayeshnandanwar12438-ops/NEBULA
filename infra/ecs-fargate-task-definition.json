@@ -1,0 +1,56 @@
+{
+  "family": "nebula-space-agent-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::123456789012:role/nebula-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::123456789012:role/nebula-ecs-task-role",
+  "containerDefinitions": [
+    {
+      "name": "nebula-backend",
+      "image": "123456789012.dkr.ecr.us-east-1.amazonaws.com/nebula-backend:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "hostPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "AWS_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "name": "BEDROCK_MODEL_ID",
+          "value": "anthropic.claude-3-5-sonnet-20241022-v2:0"
+        },
+        {
+          "name": "STRANDS_DECIDER_URL",
+          "value": "http://localhost:8000"
+        },
+        {
+          "name": "STRANDS_DECIDER_TIMEOUT",
+          "value": "3.0"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/aws/ecs/nebula-space-agent",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "backend"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "curl -f http://localhost:8000/api/health || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 10
+      }
+    }
+  ]
+}
