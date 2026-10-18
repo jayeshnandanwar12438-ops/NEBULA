@@ -13,8 +13,9 @@ import {
   ScatterChart,
   Scatter,
   ZAxis,
+  Area,
 } from "recharts";
-import { Sparkles, Orbit, AlertCircle } from "lucide-react";
+import { Sparkles, Orbit, Activity } from "lucide-react";
 
 interface LightCurveChartProps {
   epochs: ObservationEpoch[];
@@ -26,14 +27,14 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
 
   if (!epochs || epochs.length === 0) {
     return (
-      <div className="h-64 flex items-center justify-center bg-space-850/50 rounded-xl border border-space-700/60 text-slate-500 text-sm">
+      <div className="h-64 flex items-center justify-center glass-panel text-slate-500 text-sm">
         No observational epoch data available.
       </div>
     );
   }
 
   // Format photometric data
-  const photoData = epochs.map((ep, idx) => ({
+  const photoData = epochs.map((ep) => ({
     name: ep.epoch_id,
     time: new Date(ep.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     flux: ep.flux_ujy,
@@ -64,26 +65,29 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
   });
 
   return (
-    <div className="bg-space-900 border border-space-700/70 rounded-xl p-5 shadow-lg shadow-black/40">
+    <div className="glass-panel p-6 shadow-2xl relative overflow-hidden border border-white/[0.08]">
+      {/* Top subtle glow bar */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+
       {/* Header & Mode Toggles */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
-          <div className="text-xs uppercase tracking-wider font-mono text-cyan-400 font-semibold flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5" />
+          <div className="text-xs uppercase tracking-wider font-mono text-cyan-300 font-semibold flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
             Empirical Observational Diagnostics
           </div>
-          <div className="text-sm font-semibold text-slate-200 mt-0.5">
+          <div className="text-sm font-semibold text-slate-100 mt-0.5 font-sans">
             {targetName} ({epochs.length} Epoch{epochs.length > 1 ? "s" : ""})
           </div>
         </div>
 
         {/* View toggles */}
-        <div className="flex items-center bg-space-950 p-1 rounded-lg border border-space-800 text-xs font-mono">
+        <div className="flex items-center glass-pill p-1 text-xs font-mono">
           <button
             onClick={() => setChartMode("flux")}
-            className={`px-3 py-1 rounded transition-colors ${
+            className={`px-3 py-1 rounded-full transition-all ${
               chartMode === "flux"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
+                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_10px_rgba(6,182,212,0.3)] font-semibold"
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
@@ -91,9 +95,9 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
           </button>
           <button
             onClick={() => setChartMode("magnitude")}
-            className={`px-3 py-1 rounded transition-colors ${
+            className={`px-3 py-1 rounded-full transition-all ${
               chartMode === "magnitude"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
+                ? "bg-violet-500/25 text-violet-300 border border-violet-400/40 shadow-[0_0_10px_rgba(139,92,246,0.3)] font-semibold"
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
@@ -101,9 +105,9 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
           </button>
           <button
             onClick={() => setChartMode("astrometry")}
-            className={`px-3 py-1 rounded transition-colors ${
+            className={`px-3 py-1 rounded-full transition-all ${
               chartMode === "astrometry"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
+                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 shadow-[0_0_10px_rgba(16,185,129,0.3)] font-semibold"
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
@@ -117,10 +121,16 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
         {chartMode === "flux" && (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={photoData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1b2742" />
-              <XAxis dataKey="name" stroke="#64748b" fontSize={11} fontFamily="monospace" />
+              <defs>
+                <linearGradient id="fluxGlow" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" />
+              <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} fontFamily="monospace" />
               <YAxis
-                stroke="#64748b"
+                stroke="#94a3b8"
                 fontSize={11}
                 fontFamily="monospace"
                 domain={["auto", "auto"]}
@@ -128,11 +138,13 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#0d1424",
-                  borderColor: "#273863",
-                  borderRadius: "8px",
+                  backgroundColor: "rgba(10, 16, 32, 0.85)",
+                  backdropFilter: "blur(16px)",
+                  border: "1px solid rgba(255, 255, 255, 0.12)",
+                  borderRadius: "12px",
                   fontSize: "12px",
-                  color: "#f1f5f9",
+                  color: "#f8fafc",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
                   fontFamily: "monospace",
                 }}
               />
@@ -140,10 +152,10 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
                 type="monotone"
                 dataKey="flux"
                 name="Calibrated Flux (μJy)"
-                stroke="#00f0ff"
-                strokeWidth={2.5}
-                dot={{ r: 5, fill: "#00f0ff", stroke: "#090d19", strokeWidth: 2 }}
-                activeDot={{ r: 7 }}
+                stroke="#38bdf8"
+                strokeWidth={3}
+                dot={{ r: 5, fill: "#38bdf8", stroke: "#030611", strokeWidth: 2 }}
+                activeDot={{ r: 8, stroke: "#38bdf8", strokeWidth: 3 }}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -152,12 +164,12 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
         {chartMode === "magnitude" && (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={photoData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1b2742" />
-              <XAxis dataKey="name" stroke="#64748b" fontSize={11} fontFamily="monospace" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" />
+              <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} fontFamily="monospace" />
               {/* Inverted magnitude axis: lower magnitude = brighter */}
               <YAxis
                 reversed
-                stroke="#64748b"
+                stroke="#94a3b8"
                 fontSize={11}
                 fontFamily="monospace"
                 domain={["auto", "auto"]}
@@ -165,11 +177,13 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#0d1424",
-                  borderColor: "#273863",
-                  borderRadius: "8px",
+                  backgroundColor: "rgba(10, 16, 32, 0.85)",
+                  backdropFilter: "blur(16px)",
+                  border: "1px solid rgba(255, 255, 255, 0.12)",
+                  borderRadius: "12px",
                   fontSize: "12px",
-                  color: "#f1f5f9",
+                  color: "#f8fafc",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
                   fontFamily: "monospace",
                 }}
               />
@@ -177,10 +191,10 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
                 type="monotone"
                 dataKey="mag"
                 name="Apparent Magnitude"
-                stroke="#a78bfa"
-                strokeWidth={2.5}
-                dot={{ r: 5, fill: "#a78bfa", stroke: "#090d19", strokeWidth: 2 }}
-                activeDot={{ r: 7 }}
+                stroke="#c084fc"
+                strokeWidth={3}
+                dot={{ r: 5, fill: "#c084fc", stroke: "#030611", strokeWidth: 2 }}
+                activeDot={{ r: 8, stroke: "#c084fc", strokeWidth: 3 }}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -189,13 +203,13 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
         {chartMode === "astrometry" && (
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart margin={{ top: 15, right: 20, left: 10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1b2742" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" />
               <XAxis
                 type="number"
                 dataKey="raOffset"
                 name="ΔRA cos(Dec)"
                 unit="″"
-                stroke="#64748b"
+                stroke="#94a3b8"
                 fontSize={11}
                 fontFamily="monospace"
               />
@@ -204,7 +218,7 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
                 dataKey="decOffset"
                 name="ΔDec"
                 unit="″"
-                stroke="#64748b"
+                stroke="#94a3b8"
                 fontSize={11}
                 fontFamily="monospace"
               />
@@ -212,11 +226,13 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
               <Tooltip
                 cursor={{ strokeDasharray: "3 3" }}
                 contentStyle={{
-                  backgroundColor: "#0d1424",
-                  borderColor: "#273863",
-                  borderRadius: "8px",
+                  backgroundColor: "rgba(10, 16, 32, 0.85)",
+                  backdropFilter: "blur(16px)",
+                  border: "1px solid rgba(255, 255, 255, 0.12)",
+                  borderRadius: "12px",
                   fontSize: "12px",
-                  color: "#f1f5f9",
+                  color: "#f8fafc",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
                   fontFamily: "monospace",
                 }}
               />
@@ -224,7 +240,7 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
                 name="Centroid Offset"
                 data={astrometryData}
                 fill="#34d399"
-                line={{ stroke: "#10b981", strokeWidth: 1.5 }}
+                line={{ stroke: "#10b981", strokeWidth: 2 }}
               />
             </ScatterChart>
           </ResponsiveContainer>
@@ -232,14 +248,14 @@ export default function LightCurveChart({ epochs, targetName }: LightCurveChartP
       </div>
 
       {/* Epochs Data Table Mini */}
-      <div className="mt-4 pt-3 border-t border-space-800 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono">
+      <div className="mt-4 pt-3 border-t border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-[11px] font-mono">
         {epochs.slice(0, 4).map((ep) => (
-          <div key={ep.epoch_id} className="bg-space-950/60 p-2 rounded border border-space-800/80">
-            <div className="text-slate-400 font-semibold flex items-center justify-between">
+          <div key={ep.epoch_id} className="glass-card-interactive p-2.5 rounded-xl border border-white/[0.06]">
+            <div className="text-slate-300 font-semibold flex items-center justify-between">
               <span>{ep.epoch_id} ({ep.filter_band})</span>
-              <span className="text-cyan-400">{ep.magnitude.toFixed(2)}m</span>
+              <span className="text-cyan-300 font-bold">{ep.magnitude.toFixed(2)}m</span>
             </div>
-            <div className="text-slate-500 mt-1 flex justify-between">
+            <div className="text-slate-400 mt-1 flex justify-between">
               <span>Flux: {ep.flux_ujy.toFixed(1)} μJy</span>
               <span>SNR: {ep.snr.toFixed(0)}</span>
             </div>

@@ -3,39 +3,129 @@
 @tailwind utilities;
 
 :root {
-  --background: #040711;
-  --foreground: #f1f5f9;
+  --background: #030611;
+  --foreground: #f8fafc;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==============================================================================
+  Glassmorphic Architecture &  Space Design System
+   ============================================================================== */
+
+/* Base  Glass Panel */
+.glass-panel {
+  background: rgba(10, 16, 32, 0.62);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.55),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 0 20px rgba(6, 182, 212, 0.03);
+  border-radius: 1.25rem;
+}
+
+/* Elevated Glass Panel (Hover & Active Focus) */
+.glass-panel-elevated {
+  background: rgba(14, 23, 46, 0.75);
+  backdrop-filter: blur(34px) saturate(210%);
+  -webkit-backdrop-filter: blur(34px) saturate(210%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.65),
+    inset 0 1px 1px rgba(255, 255, 255, 0.22),
+    0 0 30px rgba(6, 182, 212, 0.15);
+  border-radius: 1.5rem;
+}
+
+/* Interactive Glass Card with  Spring Hover */
+.glass-card-interactive {
+  background: rgba(12, 20, 39, 0.55);
+  backdrop-filter: blur(20px) saturate(170%);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-interactive:hover {
+  transform: translateY(-3px) scale(1.01);
+  background: rgba(16, 26, 52, 0.72);
+  border-color: rgba(6, 182, 212, 0.4);
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.6),
+    0 0 25px rgba(6, 182, 212, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Glass Pill Badge */
+.glass-pill {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Glass Input Control */
+.glass-input {
+  background: rgba(6, 10, 22, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  color: #f8fafc;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: rgba(6, 182, 212, 0.6);
+  box-shadow:
+    0 0 0 2px rgba(6, 182, 212, 0.2),
+    inset 0 2px 4px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(6, 182, 212, 0.3);
 }
 
 /* Observatory background grid */
 .bg-grid-pattern {
-  background-size: 32px 32px;
-  background-image: 
-    linear-gradient(to right, rgba(14, 165, 233, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(14, 165, 233, 0.08) 1px, transparent 1px);
+  background-size: 36px 36px;
+  background-image:
+    linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
 }
 
 /* Custom space scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #050914;
+  background: rgba(3, 6, 17, 0.6);
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #0284c7;
+  background: rgba(6, 182, 212, 0.5);
 }
 
 /* Monospace telemetry styling */
@@ -44,14 +134,12 @@ body {
   font-feature-settings: "tnum" on, "zero" on;
 }
 
-/* ==============================================================================
-   Scientific Motion Graphics & Animation Keyframes
-   ============================================================================== */
-
+/* Keyframe Animations */
 @keyframes radar-sweep {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -65,6 +153,7 @@ body {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
@@ -78,23 +167,27 @@ body {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
 .animate-spin-slow {
-  animation: spin-slow 12s linear infinite;
+  animation: spin-slow 16s linear infinite;
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
-    opacity: 0.4;
-    box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+
+  0%,
+  100% {
+    opacity: 0.5;
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
   }
+
   50% {
-    opacity: 0.8;
-    box-shadow: 0 0 25px rgba(6, 182, 212, 0.5), 0 0 40px rgba(139, 92, 246, 0.3);
+    opacity: 0.9;
+    box-shadow: 0 0 35px rgba(6, 182, 212, 0.6), 0 0 50px rgba(139, 92, 246, 0.4);
   }
 }
 
@@ -102,44 +195,20 @@ body {
   animation: pulse-glow 3s ease-in-out infinite;
 }
 
-/* Sci-fi Corner Brackets */
-.hud-corner-tl {
-  position: relative;
-}
-.hud-corner-tl::before {
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  width: 8px;
-  height: 8px;
-  border-top: 2px solid #06b6d4;
-  border-left: 2px solid #06b6d4;
-  pointer-events: none;
-}
-.hud-corner-tl::after {
-  content: "";
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  width: 8px;
-  height: 8px;
-  border-bottom: 2px solid #06b6d4;
-  border-right: 2px solid #06b6d4;
-  pointer-events: none;
+@keyframes orbit-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
 }
 
-/* Scanline Overlay for Scientific Displays */
-.scanlines {
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.25) 50%
-  ), linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.03),
-    rgba(0, 255, 0, 0.01),
-    rgba(0, 0, 255, 0.03)
-  );
-  background-size: 100% 3px, 6px 100%;
-  pointer-events: none;
+.animate-orbit-pulse {
+  animation: orbit-pulse 2s ease-in-out infinite;
 }

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { HealthStatus } from "@/lib/api";
-import { Cpu, Cloud, ShieldCheck, Clock, Activity } from "lucide-react";
+import { Cpu, Cloud, Clock, Sparkles } from "lucide-react";
 
 interface HeaderProps {
   health: HealthStatus | null;
@@ -27,27 +27,27 @@ export default function Header({ health, activeViewTitle }: HeaderProps) {
   const runtimeMode = health?.runtime_mode || "CONNECTING";
 
   return (
-    <header className="h-16 bg-space-900/90 backdrop-blur border-b border-space-700/60 px-6 flex items-center justify-between shrink-0">
+    <header className="h-16 mx-6 mt-3 glass-panel px-6 flex items-center justify-between shrink-0 border border-white/[0.08] shadow-[0_12px_36px_rgba(0,0,0,0.5)] z-20">
       {/* Title & Section */}
       <div className="flex items-center space-x-3">
-        <h1 className="text-lg font-semibold text-slate-100 flex items-center gap-2">
+        <h1 className="text-base font-semibold text-slate-100 flex items-center gap-2 tracking-tight">
           {activeViewTitle}
         </h1>
-        <span className="text-xs text-slate-500 font-mono">|</span>
-        <span className="text-xs font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/60">
-          MODE: {runtimeMode}
+        <span className="text-xs text-slate-600 font-mono">/</span>
+        <span className="text-[11px] font-mono text-cyan-300 glass-pill px-2.5 py-0.5 border border-cyan-400/30 shadow-[0_0_10px_rgba(6,182,212,0.15)]">
+          {runtimeMode}
         </span>
       </div>
 
       {/* Telemetry Status Pills */}
       <div className="flex items-center space-x-3 text-xs">
         {/* Strands Decider Status */}
-        <div className="flex items-center space-x-2 bg-space-850 px-3 py-1.5 rounded-lg border border-space-700/70">
+        <div className="flex items-center space-x-2 glass-pill px-3 py-1.5 border border-white/[0.08]">
           <Cpu className="w-3.5 h-3.5 text-cyan-400" />
           <span className="text-slate-400">Decider 2B:</span>
           <span
             className={`font-mono font-medium ${
-              deciderOnline ? "text-emerald-400" : "text-amber-400"
+              deciderOnline ? "text-emerald-300" : "text-amber-300"
             }`}
           >
             {deciderOnline ? "ONLINE (Qwen Torso)" : "DEV FALLBACK"}
@@ -55,12 +55,12 @@ export default function Header({ health, activeViewTitle }: HeaderProps) {
         </div>
 
         {/* Amazon Bedrock Status */}
-        <div className="flex items-center space-x-2 bg-space-850 px-3 py-1.5 rounded-lg border border-space-700/70">
+        <div className="flex items-center space-x-2 glass-pill px-3 py-1.5 border border-white/[0.08]">
           <Cloud className="w-3.5 h-3.5 text-violet-400" />
           <span className="text-slate-400">Bedrock:</span>
           <span
             className={`font-mono font-medium ${
-              bedrockOnline ? "text-emerald-400" : "text-slate-400"
+              bedrockOnline ? "text-emerald-300" : "text-slate-300"
             }`}
           >
             {bedrockOnline ? "AWS CONVERSE" : "DEV SIMULATED"}
@@ -68,8 +68,8 @@ export default function Header({ health, activeViewTitle }: HeaderProps) {
         </div>
 
         {/* UTC Observatory Clock */}
-        <div className="hidden lg:flex items-center space-x-1.5 text-slate-400 font-mono text-[11px] bg-space-950/70 px-2.5 py-1.5 rounded border border-space-800">
-          <Clock className="w-3 h-3 text-slate-500" />
+        <div className="hidden lg:flex items-center space-x-1.5 text-slate-300 font-mono text-[11px] glass-pill px-3 py-1.5 border border-white/[0.08]">
+          <Clock className="w-3 h-3 text-cyan-400" />
           <span>{utcTime || "CALIBRATING..."}</span>
         </div>
       </div>

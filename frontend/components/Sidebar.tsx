@@ -10,6 +10,7 @@ import {
   BarChart3,
   Settings,
   Radio,
+  Sparkles,
 } from "lucide-react";
 
 export type NavTab = "overview" | "investigate" | "history" | "decision-lab" | "benchmark" | "settings";
@@ -22,7 +23,7 @@ interface SidebarProps {
 
 export default function Sidebar({ currentTab, onSelectTab, runtimeMode }: SidebarProps) {
   const navItems = [
-    { id: "overview" as NavTab, label: "Overview", icon: Compass },
+    { id: "overview" as NavTab, label: "Galactic Overview", icon: Compass },
     { id: "investigate" as NavTab, label: "New Investigation", icon: FileSearch },
     { id: "history" as NavTab, label: "Investigation History", icon: History },
     { id: "decision-lab" as NavTab, label: "Decision Lab", icon: FlaskConical },
@@ -33,22 +34,22 @@ export default function Sidebar({ currentTab, onSelectTab, runtimeMode }: Sideba
   const isLive = runtimeMode && runtimeMode.includes("LIVE_DECIDER");
 
   return (
-    <aside className="w-64 bg-space-900 border-r border-space-700/60 flex flex-col justify-between shrink-0 select-none">
+    <aside className="w-64 glass-panel m-3 mr-0 h-[calc(100vh-1.5rem)] flex flex-col justify-between shrink-0 select-none border border-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
       <div>
         {/* Brand Header */}
-        <div className="p-5 border-b border-space-700/60 flex items-center justify-between">
+        <div className="p-4 pb-3 border-b border-white/[0.08] flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500/20 via-blue-600/20 to-violet-600/30 border border-cyan-500/40 flex items-center justify-center shadow-lg shadow-cyan-950/50">
-              <Telescope className="w-5 h-5 text-cyan-400" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 via-blue-600/30 to-violet-600/30 border border-cyan-400/40 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+              <Telescope className="w-5 h-5 text-cyan-300" />
             </div>
             <div>
-              <div className="font-bold text-base tracking-wider text-slate-100 flex items-center gap-1.5">
+              <div className="font-bold text-base tracking-wider text-slate-100 flex items-center gap-1.5 font-mono">
                 NEBULA
-                <span className="text-[10px] px-1.5 py-0.5 rounded font-mono font-medium bg-cyan-950 text-cyan-400 border border-cyan-800">
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">
                   2B
                 </span>
               </div>
-              <div className="text-[11px] text-slate-400 tracking-tight">
+              <div className="text-[11px] text-slate-400 tracking-tight font-sans">
                 Anomaly Investigator
               </div>
             </div>
@@ -56,7 +57,7 @@ export default function Sidebar({ currentTab, onSelectTab, runtimeMode }: Sideba
         </div>
 
         {/* Navigation Tabs */}
-        <nav className="p-3 space-y-1">
+        <nav className="p-3 space-y-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = currentTab === item.id;
@@ -64,13 +65,13 @@ export default function Sidebar({ currentTab, onSelectTab, runtimeMode }: Sideba
               <button
                 key={item.id}
                 onClick={() => onSelectTab(item.id)}
-                className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
                   active
-                    ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 shadow-sm shadow-cyan-950"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-space-800/60 border border-transparent"
+                    ? "bg-gradient-to-r from-cyan-500/20 via-blue-500/15 to-transparent text-cyan-300 border border-cyan-400/40 shadow-[0_0_15px_rgba(6,182,212,0.25),inset_0_1px_0_rgba(255,255,255,0.15)] font-semibold"
+                    : "text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
-                <Icon className={`w-4 h-4 ${active ? "text-cyan-400" : "text-slate-500"}`} />
+                <Icon className={`w-4 h-4 ${active ? "text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]" : "text-slate-500"}`} />
                 <span>{item.label}</span>
               </button>
             );
@@ -79,22 +80,23 @@ export default function Sidebar({ currentTab, onSelectTab, runtimeMode }: Sideba
       </div>
 
       {/* Telemetry Footer */}
-      <div className="p-4 border-t border-space-700/60 bg-space-950/40">
+      <div className="p-4 border-t border-white/[0.08] bg-white/[0.02] rounded-b-2xl">
         <div className="flex items-center justify-between text-xs mb-2">
           <span className="text-slate-400 font-medium">Decider 2B Status</span>
           <span
-            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${
+            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold ${
               isLive
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                : "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+                : "bg-amber-500/20 text-amber-300 border border-amber-400/40 shadow-[0_0_10px_rgba(245,158,11,0.25)]"
             }`}
           >
             <Radio className="w-2.5 h-2.5 animate-pulse" />
             {isLive ? "ONLINE (2B)" : "DEV FALLBACK"}
           </span>
         </div>
-        <div className="text-[11px] text-slate-500 leading-relaxed font-mono">
-          AWS Strands Hackathon &apos;26
+        <div className="text-[10px] text-slate-500 leading-relaxed font-mono flex items-center gap-1">
+          <Sparkles className="w-3 h-3 text-cyan-400" />
+          <span>AWS Strands Hackathon &apos;26</span>
         </div>
       </div>
     </aside>
